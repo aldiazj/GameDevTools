@@ -10,19 +10,16 @@ using System.Collections.Generic;
 // this system can be extended to support multiple audio sources, and audio clips playing
 // simultaneously
 
-// it needs to be added to game object with at least 2 audio sources,
-// one for the FX and one for the music although it is recommended to have at least 5 for the FX
-
 /// <summary>
 /// This class is in charge of the audio in a 2D game, 
 
 /// </summary>
 public class AudioSystem2D : MonoBehaviour
 {
-    // In the inspector drag each Audios ource to these fields
+    // Sets the audio sources needed for FX, it is recommended to have at least 5 for the FX
     [SerializeField]
+    int numberOfFxSources = 1;
     AudioSource[] fXSources;
-    [SerializeField]
     AudioSource musicSource;
 
     // All audios must be on the Resources folder and if there's any sub folder, the path must be declared in the next fields
@@ -71,7 +68,17 @@ public class AudioSystem2D : MonoBehaviour
             Destroy(gameObject);
         }
         else
-            loadedResources = new AudioClip[fXSources.Length];
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+            // Make sure the number of fx sources is atleast 1
+            numberOfFxSources=(numberOfFxSources > 0) ? numberOfFxSources:1;
+            fXSources = new AudioSource[numberOfFxSources];
+            for (int i = 0; i < fXSources.Length; i++)
+            {
+                fXSources[i] = gameObject.AddComponent<AudioSource>();
+            }
+            loadedResources = new AudioClip[numberOfFxSources];
+        }
     }
 
     // Check if the user has already muted the program
